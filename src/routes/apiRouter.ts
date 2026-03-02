@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import Paths from '@src/common/constants/Paths';
 
+import AuthRoutes from './AuthRoutes';
 import AttendanceLogRoutes from './AttendanceLogRoutes';
 import UserRoutes from './UserRoutes';
 
@@ -10,6 +11,12 @@ import UserRoutes from './UserRoutes';
 ******************************************************************************/
 
 const apiRouter = Router();
+
+// ----------------------- Add AuthRouter --------------------------------- //
+
+const authRouter = Router();
+authRouter.post(Paths.Auth.Login, AuthRoutes.login);
+apiRouter.use(Paths.Auth._, authRouter);
 
 // ----------------------- Add UserRouter --------------------------------- //
 

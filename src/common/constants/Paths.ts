@@ -2,6 +2,10 @@ import jetPaths from 'jet-paths';
 
 const Paths = {
   _: '/api',
+  Auth: {
+    _: '/auth',
+    Login: '/login',
+  },
   Users: {
     _: '/users',
     Get: '/all',
