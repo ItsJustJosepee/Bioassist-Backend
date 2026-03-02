@@ -68,7 +68,7 @@ const parseSchedule = parseObject<ISchedule>(schema);
 // Lighter weight test - just check required fields
 const isCompleteSchedule = (obj: unknown): obj is ISchedule => {
   if (typeof obj !== 'object' || obj === null) return false;
-  const s = obj as any;
+  const s = obj as Record<string, unknown>;
   return (
     isString(s.dias_laborales) &&
     isTimeFormat(s.rango_entrada_inicio) &&

@@ -24,7 +24,7 @@ async function getOne(email: string): Promise<IUser | null> {
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [email]);
+  const result = await Orm.query<IUser>(query, [email]);
   return result.rows[0] || null;
 }
 
@@ -38,7 +38,7 @@ async function getOneById(id_usuario: string): Promise<IUser | null> {
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [id_usuario]);
+  const result = await Orm.query<IUser>(query, [id_usuario]);
   return result.rows[0] || null;
 }
 
@@ -52,7 +52,7 @@ async function persists(id_usuario: string): Promise<boolean> {
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [id_usuario]);
+  const result = await Orm.query<Record<string, unknown>>(query, [id_usuario]);
   return result.rows.length > 0;
 }
 
@@ -66,7 +66,7 @@ async function getAll(): Promise<IUser[]> {
     ORDER BY created_at DESC
   `;
 
-  const result = await Orm.query(query);
+  const result = await Orm.query<IUser>(query);
   return result.rows;
 }
 
@@ -80,7 +80,7 @@ async function getAllByInstitution(id_institucion: string): Promise<IUser[]> {
     ORDER BY nombre ASC
   `;
 
-  const result = await Orm.query(query, [id_institucion]);
+  const result = await Orm.query<IUser>(query, [id_institucion]);
   return result.rows;
 }
 
@@ -118,7 +118,7 @@ async function add(user: IUser): Promise<IUser> {
     user.is_active !== undefined ? user.is_active : true,
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<IUser>(query, values);
   return result.rows[0];
 }
 
@@ -155,7 +155,7 @@ async function update(user: IUser): Promise<IUser | null> {
     user.is_active !== undefined ? user.is_active : true,
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<IUser>(query, values);
   return result.rows[0] || null;
 }
 
@@ -170,7 +170,7 @@ async function delete_(id_usuario: string): Promise<boolean> {
     RETURNING id_usuario
   `;
 
-  const result = await Orm.query(query, [id_usuario]);
+  const result = await Orm.query<{ id_usuario: string }>(query, [id_usuario]);
   return result.rows.length > 0;
 }
 
@@ -184,7 +184,7 @@ async function hardDelete(id_usuario: string): Promise<boolean> {
     RETURNING id_usuario
   `;
 
-  const result = await Orm.query(query, [id_usuario]);
+  const result = await Orm.query<{ id_usuario: string }>(query, [id_usuario]);
   return result.rows.length > 0;
 }
 
@@ -202,7 +202,7 @@ async function updatePassword(
     RETURNING id_usuario
   `;
 
-  const result = await Orm.query(query, [id_usuario, password_hash]);
+  const result = await Orm.query<{ id_usuario: string }>(query, [id_usuario, password_hash]);
   return result.rows.length > 0;
 }
 
@@ -220,7 +220,7 @@ async function updateWebAuthnCredentials(
     RETURNING id_usuario
   `;
 
-  const result = await Orm.query(query, [id_usuario, credentials]);
+  const result = await Orm.query<{ id_usuario: string }>(query, [id_usuario, credentials]);
   return result.rows.length > 0;
 }
 

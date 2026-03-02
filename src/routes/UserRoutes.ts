@@ -1,6 +1,3 @@
-import { isNumber } from 'jet-validators';
-import { transform } from 'jet-validators/utils';
-
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
 import { isUUID } from '@src/common/utils/custom-validators';
 import User from '@src/models/User.model';
@@ -14,8 +11,8 @@ import parseReq from './common/parseReq';
 ******************************************************************************/
 
 const reqValidators = {
-  add: parseReq({ user: (obj: any) => User.isCompleteUser(obj) }),
-  update: parseReq({ user: (obj: any) => User.isCompleteUser(obj) }),
+  add: parseReq({ user: (obj: unknown) => User.isCompleteUser(obj) }),
+  update: parseReq({ user: (obj: unknown) => User.isCompleteUser(obj) }),
   getById: parseReq({ id: isUUID }),
   delete: parseReq({ id: isUUID }),
 } as const;

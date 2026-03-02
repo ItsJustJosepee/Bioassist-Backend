@@ -1,7 +1,5 @@
-import { isString } from 'jet-validators';
-
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
-import { isUUID, isISO8601 } from '@src/common/utils/custom-validators';
+import { isUUID } from '@src/common/utils/custom-validators';
 import AttendanceLog from '@src/models/AttendanceLog.model';
 import AttendanceLogService from '@src/services/AttendanceLogService';
 
@@ -14,7 +12,7 @@ import parseReq from './common/parseReq';
 
 const reqValidators = {
   checkIn: parseReq({
-    log: (obj: any) => AttendanceLog.isCompleteAttendanceLog(obj),
+    log: (obj: unknown) => AttendanceLog.isCompleteAttendanceLog(obj),
   }),
   checkOut: parseReq({
     id_registro: isUUID,
@@ -35,7 +33,7 @@ const reqValidators = {
  */
 async function getByUser(req: Req, res: Res) {
   const { id_usuario } = reqValidators.getByUser(
-    req.params as any,
+    req.params as Record<string, unknown>,
   );
   const logs = await AttendanceLogService.getByUser(id_usuario);
   res.status(HttpStatusCodes.OK).json({ logs });
@@ -59,9 +57,11 @@ async function checkIn(req: Req, res: Res) {
  */
 async function checkOut(req: Req, res: Res) {
   const { id_registro } = reqValidators.checkOut(
-    req.params as any,
+    req.params as Record<string, unknown>,
   );
-  const coordenadas = req.body?.coordenadas_registro;
+  const coordenadas = req.body?.coordenadas_registro as
+    | Record<string, unknown>
+    | undefined;
   const updatedLog = await AttendanceLogService.checkOut(id_registro, coordenadas);
   res.status(HttpStatusCodes.OK).json({ log: updatedLog });
 }
@@ -92,7 +92,7 @@ async function checkOut(req: Req, res: Res) {
  * }
  */
 async function getSummary(req: Req, res: Res) {
-  const id_usuario = req.params.id_usuario as string;
+  const id_usuario = req.params.id_usuario;
   
   // Validate ID
   if (!id_usuario || !isUUID(id_usuario)) {
@@ -146,7 +146,7 @@ async function getSummary(req: Req, res: Res) {
  * @route DELETE /api/attendance/logs/:id_registro
  */
 async function delete_(req: Req, res: Res) {
-  const id_registro = req.params.id_registro as string;
+  const id_registro = req.params.id_registro;
   if (!isUUID(id_registro)) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)

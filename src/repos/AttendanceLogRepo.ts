@@ -5,6 +5,22 @@ import { IAttendanceLog } from '@src/models/AttendanceLog.model';
 import Orm from './Orm';
 
 /******************************************************************************
+                                Types
+******************************************************************************/
+
+interface IHoursSummaryRow {
+  fecha: Date;
+  hora_entrada: Date | null;
+  hora_salida: Date | null;
+  horas_trabajadas: string | null;
+  estado: string;
+}
+
+interface ITotalHoursRow {
+  total_hours: number;
+}
+
+/******************************************************************************
                                 Constants
 ******************************************************************************/
 
@@ -24,7 +40,7 @@ async function getOneById(id_registro: string): Promise<IAttendanceLog | null> {
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [id_registro]);
+  const result = await Orm.query<IAttendanceLog>(query, [id_registro]);
   return result.rows[0] || null;
 }
 
@@ -38,7 +54,7 @@ async function getByUser(id_usuario: string): Promise<IAttendanceLog[]> {
     ORDER BY fecha DESC, hora_entrada DESC
   `;
 
-  const result = await Orm.query(query, [id_usuario]);
+  const result = await Orm.query<IAttendanceLog>(query, [id_usuario]);
   return result.rows;
 }
 
@@ -55,7 +71,7 @@ async function getByUserAndDate(
     ORDER BY hora_entrada DESC
   `;
 
-  const result = await Orm.query(query, [id_usuario, fecha]);
+  const result = await Orm.query<IAttendanceLog>(query, [id_usuario, fecha]);
   return result.rows;
 }
 
@@ -73,7 +89,7 @@ async function getByUserBetweenDates(
     ORDER BY fecha DESC, hora_entrada DESC
   `;
 
-  const result = await Orm.query(query, [
+  const result = await Orm.query<IAttendanceLog>(query, [
     id_usuario,
     fecha_inicio,
     fecha_fin,
@@ -113,7 +129,7 @@ async function add(log: IAttendanceLog): Promise<IAttendanceLog> {
     log.estado || 'a_tiempo',
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<IAttendanceLog>(query, values);
   return result.rows[0];
 }
 
@@ -137,7 +153,7 @@ async function update(log: IAttendanceLog): Promise<IAttendanceLog | null> {
     log.estado || 'a_tiempo',
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<IAttendanceLog>(query, values);
   return result.rows[0] || null;
 }
 
@@ -151,7 +167,7 @@ async function delete_(id_registro: string): Promise<boolean> {
     RETURNING id_registro
   `;
 
-  const result = await Orm.query(query, [id_registro]);
+  const result = await Orm.query<{ id_registro: string }>(query, [id_registro]);
   return result.rows.length > 0;
 }
 
@@ -184,13 +200,13 @@ async function getHoursSummary(
     ORDER BY fecha DESC
   `;
 
-  const result = await Orm.query(query, [
+  const result = await Orm.query<IHoursSummaryRow>(query, [
     id_usuario,
     fecha_inicio,
     fecha_fin,
   ]);
 
-  return result.rows.map((row: any) => ({
+  return result.rows.map((row) => ({
     fecha: row.fecha,
     hora_entrada: row.hora_entrada,
     hora_salida: row.hora_salida,
@@ -214,14 +230,14 @@ async function getTotalWorkedHours(
     WHERE id_usuario = $1 AND hora_entrada IS NOT NULL AND hora_salida IS NOT NULL
   `;
 
-  const values: any[] = [id_usuario];
+  const values: unknown[] = [id_usuario];
 
   if (fecha_inicio && fecha_fin) {
     query += ` AND fecha BETWEEN $2 AND $3`;
     values.push(fecha_inicio, fecha_fin);
   }
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<ITotalHoursRow>(query, values);
   return result.rows[0]?.total_hours || 0;
 }
 
@@ -235,7 +251,7 @@ async function getTodayCheckIn(id_usuario: string): Promise<IAttendanceLog | nul
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [id_usuario]);
+  const result = await Orm.query<IAttendanceLog>(query, [id_usuario]);
   return result.rows[0] || null;
 }
 

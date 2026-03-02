@@ -35,7 +35,7 @@ const schema: Schema<IAttendanceLog> = {
   fecha: transformIsDate,
   hora_entrada: (val: unknown): val is Date | null => val === null || val instanceof Date,
   hora_salida: (val: unknown): val is Date | null => val === null || val instanceof Date,
-  coordenadas_registro: (val: unknown): val is any => val === null || typeof val === 'object',
+  coordenadas_registro: (val: unknown): val is ICoordinates | null => val === null || typeof val === 'object',
   evidencia_url: (val: unknown): val is string | null => val === null || typeof val === 'string',
   estado: isString,
   created_at: transformIsDate,
@@ -80,7 +80,7 @@ const parseAttendanceLog = parseObject<IAttendanceLog>(schema);
 // Lightweight test - just check required fields
 const isCompleteAttendanceLog = (obj: unknown): obj is IAttendanceLog => {
   if (typeof obj !== 'object' || obj === null) return false;
-  const log = obj as any;
+  const log = obj as Record<string, unknown>;
   return isUUID(log.id_usuario) && log.fecha instanceof Date;
 };
 

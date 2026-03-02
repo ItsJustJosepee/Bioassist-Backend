@@ -65,7 +65,7 @@ const parseLocation = parseObject<ILocation>(schema);
 // Lighter weight test - just check required fields
 const isCompleteLocation = (obj: unknown): obj is ILocation => {
   if (typeof obj !== 'object' || obj === null) return false;
-  const l = obj as any;
+  const l = obj as Record<string, unknown>;
   return (
     isString(l.nombre_sitio) &&
     isString(l.direccion) &&

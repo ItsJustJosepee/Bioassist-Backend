@@ -24,7 +24,7 @@ async function getOneById(id_horario: string): Promise<ISchedule | null> {
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [id_horario]);
+  const result = await Orm.query<ISchedule>(query, [id_horario]);
   return result.rows[0] || null;
 }
 
@@ -38,7 +38,7 @@ async function getByInstitution(id_institucion: string): Promise<ISchedule[]> {
     ORDER BY created_at DESC
   `;
 
-  const result = await Orm.query(query, [id_institucion]);
+  const result = await Orm.query<ISchedule>(query, [id_institucion]);
   return result.rows;
 }
 
@@ -52,7 +52,7 @@ async function getAll(): Promise<ISchedule[]> {
     ORDER BY created_at DESC
   `;
 
-  const result = await Orm.query(query);
+  const result = await Orm.query<ISchedule>(query);
   return result.rows;
 }
 
@@ -92,7 +92,7 @@ async function add(schedule: ISchedule): Promise<ISchedule> {
     schedule.is_active || true,
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<ISchedule>(query, values);
   return result.rows[0];
 }
 
@@ -126,7 +126,7 @@ async function update(schedule: ISchedule): Promise<ISchedule | null> {
     schedule.is_active || true,
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<ISchedule>(query, values);
   return result.rows[0] || null;
 }
 
@@ -141,7 +141,7 @@ async function delete_(id_horario: string): Promise<boolean> {
     RETURNING id_horario
   `;
 
-  const result = await Orm.query(query, [id_horario]);
+  const result = await Orm.query<{ id_horario: string }>(query, [id_horario]);
   return result.rows.length > 0;
 }
 

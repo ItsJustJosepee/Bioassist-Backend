@@ -23,7 +23,7 @@ export interface IJwtPayload {
 /**
  * Middleware para validar el token JWT y establecer el payload en res.locals
  */
-export async function authMiddleware(req: Req, res: Res, next: NextFunction): Promise<void> {
+export function authMiddleware(req: Req, res: Res, next: NextFunction): void {
   try {
     const authHeader = req.headers.authorization;
 

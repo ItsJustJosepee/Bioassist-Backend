@@ -1,5 +1,5 @@
 import { isNonEmptyString, isString } from 'jet-validators';
-import { parseObject, Schema, testObject } from 'jet-validators/utils';
+import { parseObject, Schema } from 'jet-validators/utils';
 
 import { transformIsDate } from '@src/common/utils/validators';
 import { isUUID } from '@src/common/utils/custom-validators';
@@ -56,7 +56,7 @@ const parseInstitution = parseObject<IInstitution>(schema);
 // Lighter weight test - just check required fields
 const isCompleteInstitution = (obj: unknown): obj is IInstitution => {
   if (typeof obj !== 'object' || obj === null) return false;
-  const i = obj as any;
+  const i = obj as Record<string, unknown>;
   return isNonEmptyString(i.nombre_institucion) && isString(i.tipo_institucion);
 };
 

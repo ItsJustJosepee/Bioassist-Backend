@@ -1,6 +1,6 @@
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
 import { RouteError } from '@src/common/utils/route-errors';
-import { IAttendanceLog } from '@src/models/AttendanceLog.model';
+import { IAttendanceLog, ICoordinates } from '@src/models/AttendanceLog.model';
 import AttendanceLogRepo from '@src/repos/AttendanceLogRepo';
 import UserRepo from '@src/repos/UserRepo';
 
@@ -77,7 +77,7 @@ async function checkIn(log: IAttendanceLog): Promise<IAttendanceLog> {
  * Create a check-out record or update existing check-in.
  * This registers the exit time and calculates total hours.
  */
-async function checkOut(id_registro: string, coordenadas?: any): Promise<IAttendanceLog> {
+async function checkOut(id_registro: string, coordenadas?: ICoordinates): Promise<IAttendanceLog> {
   const log = await AttendanceLogRepo.getOneById(id_registro);
   if (!log) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, Errors.LOG_NOT_FOUND);

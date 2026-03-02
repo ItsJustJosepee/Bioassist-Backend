@@ -24,7 +24,7 @@ async function getOneById(id_ubicacion: string): Promise<ILocation | null> {
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [id_ubicacion]);
+  const result = await Orm.query<ILocation>(query, [id_ubicacion]);
   return result.rows[0] || null;
 }
 
@@ -38,7 +38,7 @@ async function getByInstitution(id_institucion: string): Promise<ILocation[]> {
     ORDER BY nombre_sitio ASC
   `;
 
-  const result = await Orm.query(query, [id_institucion]);
+  const result = await Orm.query<ILocation>(query, [id_institucion]);
   return result.rows;
 }
 
@@ -52,7 +52,7 @@ async function getAll(): Promise<ILocation[]> {
     ORDER BY nombre_sitio ASC
   `;
 
-  const result = await Orm.query(query);
+  const result = await Orm.query<ILocation>(query);
   return result.rows;
 }
 
@@ -90,7 +90,7 @@ async function add(location: ILocation): Promise<ILocation> {
     location.is_active || true,
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<ILocation>(query, values);
   return result.rows[0];
 }
 
@@ -122,7 +122,7 @@ async function update(location: ILocation): Promise<ILocation | null> {
     location.is_active || true,
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<ILocation>(query, values);
   return result.rows[0] || null;
 }
 
@@ -137,7 +137,7 @@ async function delete_(id_ubicacion: string): Promise<boolean> {
     RETURNING id_ubicacion
   `;
 
-  const result = await Orm.query(query, [id_ubicacion]);
+  const result = await Orm.query<{ id_ubicacion: string }>(query, [id_ubicacion]);
   return result.rows.length > 0;
 }
 

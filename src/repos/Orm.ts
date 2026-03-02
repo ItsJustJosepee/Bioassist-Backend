@@ -3,7 +3,7 @@
  * Reemplaza a MockOrm.ts - Conexión real a PostgreSQL en Railway
  */
 
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 
 import EnvVars from '@src/common/constants/env';
 import logger from 'jet-logger';
@@ -35,7 +35,7 @@ function initializePool(): Pool {
     connectionTimeoutMillis: 2000, // Timeout al conectar (2s)
   });
 
-  pool.on('error', (err: any) => {
+  pool.on('error', (err: Error) => {
     logger.err('Unexpected error on idle client', err);
     process.exit(-1);
   });
@@ -69,15 +69,15 @@ async function getClient(): Promise<PoolClient> {
  * @param values - Parámetros para la query (evita SQL injection)
  * @returns Resultado de la query
  */
-async function query(
+async function query<T extends QueryResultRow = QueryResultRow>(
   text: string,
-  values?: any[],
-): Promise<any> {
+  values?: unknown[],
+): Promise<QueryResult<T>> {
   const pool = getPool();
   const start = Date.now();
 
   try {
-    const result = await pool.query(text, values);
+    const result = await pool.query<T>(text, values);
     const duration = Date.now() - start;
 
     if (duration > 1000) {
@@ -88,7 +88,7 @@ async function query(
 
     return result;
   } catch (err) {
-    logger.err(`Database query error: ${text}`, err);
+    logger.err(`Database query error: ${text} - ${String(err)}`);
     throw err;
   }
 }
@@ -107,9 +107,9 @@ async function withTransaction<T>(
     const result = await callback(client);
     await client.query('COMMIT');
     return result;
-  } catch (err: any) {
+  } catch (err) {
     await client.query('ROLLBACK');
-    logger.err('Transaction rolled back due to error', err);
+    logger.err(`Transaction rolled back due to error: ${String(err)}`);
     throw err;
   } finally {
     client.release();
@@ -131,8 +131,7 @@ async function closePool(): Promise<void> {
 /**
  * Limpia sin cerrar (para tests).
  */
-async function resetPool(): Promise<void> {
-  const p = getPool();
+function resetPool(): void {
   // Aquí podrías ejecutar TRUNCATE TABLE si necesitas limpiar datos
   logger.info('Pool reset for testing');
 }

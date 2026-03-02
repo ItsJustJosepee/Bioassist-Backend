@@ -72,7 +72,7 @@ const parseUser = parseObject<IUser>(schema);
 // Lighter weight test - just check required fields
 const isCompleteUser = (obj: unknown): obj is IUser => {
   if (typeof obj !== 'object' || obj === null) return false;
-  const u = obj as any;
+  const u = obj as Record<string, unknown>;
   return (
     isNonEmptyString(u.nombre) &&
     isEmail(u.email) &&

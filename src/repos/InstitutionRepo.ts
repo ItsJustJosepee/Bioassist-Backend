@@ -24,7 +24,7 @@ async function getOneById(id_institucion: string): Promise<IInstitution | null> 
     LIMIT 1
   `;
 
-  const result = await Orm.query(query, [id_institucion]);
+  const result = await Orm.query<IInstitution>(query, [id_institucion]);
   return result.rows[0] || null;
 }
 
@@ -37,7 +37,7 @@ async function getAll(): Promise<IInstitution[]> {
     ORDER BY nombre_institucion ASC
   `;
 
-  const result = await Orm.query(query);
+  const result = await Orm.query<IInstitution>(query);
   return result.rows;
 }
 
@@ -61,7 +61,7 @@ async function add(institution: IInstitution): Promise<IInstitution> {
 
   const values = [id_institucion, institution.nombre_institucion, institution.tipo_institucion];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<IInstitution>(query, values);
   return result.rows[0];
 }
 
@@ -85,7 +85,7 @@ async function update(institution: IInstitution): Promise<IInstitution | null> {
     institution.tipo_institucion,
   ];
 
-  const result = await Orm.query(query, values);
+  const result = await Orm.query<IInstitution>(query, values);
   return result.rows[0] || null;
 }
 
@@ -99,7 +99,7 @@ async function delete_(id_institucion: string): Promise<boolean> {
     RETURNING id_institucion
   `;
 
-  const result = await Orm.query(query, [id_institucion]);
+  const result = await Orm.query<{ id_institucion: string }>(query, [id_institucion]);
   return result.rows.length > 0;
 }
 
