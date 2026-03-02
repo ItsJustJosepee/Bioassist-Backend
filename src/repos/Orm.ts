@@ -36,7 +36,7 @@ function initializePool(): Pool {
   });
 
   pool.on('error', (err: Error) => {
-    logger.err('Unexpected error on idle client', err);
+    logger.err(`Unexpected error on idle client: ${String(err)}`);
     process.exit(-1);
   });
 

@@ -1,5 +1,6 @@
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
 import { isUUID } from '@src/common/utils/custom-validators';
+import { ICoordinates } from '@src/models/AttendanceLog.model';
 import AttendanceLog from '@src/models/AttendanceLog.model';
 import AttendanceLogService from '@src/services/AttendanceLogService';
 
@@ -60,7 +61,7 @@ async function checkOut(req: Req, res: Res) {
     req.params as Record<string, unknown>,
   );
   const coordenadas = req.body?.coordenadas_registro as
-    | Record<string, unknown>
+    | ICoordinates
     | undefined;
   const updatedLog = await AttendanceLogService.checkOut(id_registro, coordenadas);
   res.status(HttpStatusCodes.OK).json({ log: updatedLog });
